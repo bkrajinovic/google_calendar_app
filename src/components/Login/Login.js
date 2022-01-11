@@ -27,7 +27,7 @@ function Login({ setIsLoggedIn }) {
         <div className="login_button">
           <GoogleLogin
             clientId="306213266656-u16acf1jm9n3c93c88nvvkeq29girmho.apps.googleusercontent.com"
-            buttonText="Login"
+            buttonText="Login with Google"
             onSuccess={responseGoogleOnSuccess}
             onFailure={responseGoogleOnFailure}
             cookiePolicy={"single_host_origin"}

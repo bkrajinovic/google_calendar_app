@@ -33,7 +33,7 @@ function Header({ handleTimeFilter, setIsModalOpen }) {
             {numOfDays.map((day, index) => (
               <Dropdown.Item
                 key={index}
-                onClick={() => handleTimeFilter(day.value)}
+                onClick={() => handleTimeFilter(day)}
               >
                 {day.name}
               </Dropdown.Item>

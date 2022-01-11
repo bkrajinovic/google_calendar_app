@@ -1,3 +1,7 @@
+.events_list_wrapper {
+  padding: 50px;
+}
+
 .no_data_message {
   display: flex;
   align-items: center;
@@ -5,4 +9,15 @@
   margin-top: 20%;
   font-size: 20px;
   font-weight: 300;
+}
+
+.group_list {
+  background-color: #fff;
+}
+
+.group_list p {
+  font-size: 20px;
+  font-weight: 500;
+  padding: 20px;
+  margin: 0;
 }

@@ -5,7 +5,7 @@ import Header from "components/Header/Header";
 import AddEventModal from "components/AddEventModal/AddEventModal";
 import localforage from "localforage";
 import api from "helpers/api";
-import { filterDateTimeFormat } from "./constants";
+import { filterDateTimeFormat, defaultDateFormat } from "./constants";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import moment from "moment";
@@ -14,9 +14,55 @@ function App() {
   const API_KEY = "AIzaSyDuHD2xWRSbr1hSUtRfo-4Z63NSF5vfCh0";
 
   const [events, setEvents] = useState([]);
+  const [filterDays, setFilterDays] = useState("Last 7 days");
+  const [groupedEvents, setGroupedEvents] = useState(null);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (events && events.length) {
+      if (filterDays !== "Last 30 days") {
+        const groups = events.reduce((groups, event) => {
+          const date = moment(event.start).format(defaultDateFormat);
+          console.log(groups[date]);
+          if (!groups[date]) {
+            groups[date] = [];
+          }
+          groups[date].push(event);
+          return groups;
+        }, {});
+
+        const groupArrays = Object.keys(groups).map((date) => {
+          return {
+            date,
+            events: groups[date],
+          };
+        });
+        setGroupedEvents(groupArrays);
+      } else {
+        const groups = events.reduce((groups, event) => {
+          const weekNumber = moment(event.start).week();
+          console.log(groups[weekNumber]);
+          if (!groups[weekNumber]) {
+            groups[weekNumber] = [];
+          }
+          groups[weekNumber].push(event);
+          return groups;
+        }, {});
+
+        const groupArrays = Object.keys(groups).map((week) => {
+          return {
+            date: `Week ${week}`,
+            events: groups[week],
+          };
+        });
+
+        console.log("groupArrays", groupArrays);
+        setGroupedEvents(groupArrays);
+      }
+    }
+  }, [events]);
 
   useEffect(() => {
     localforage.getItem("access_token").then((token) => {
@@ -28,11 +74,13 @@ function App() {
     });
   }, []);
 
-  const handleTimeFilter = (value) => {
+  const handleTimeFilter = (day) => {
+    setIsLoadingEvents(true);
+    setFilterDays(day.name);
     const timeFilter = `&timeMax=${moment().format(
       filterDateTimeFormat
     )}&timeMin=${moment()
-      .subtract(value, "days")
+      .subtract(day.value, "days")
       .format(filterDateTimeFormat)}`;
     getEvents(timeFilter);
   };
@@ -47,13 +95,13 @@ function App() {
   };
 
   const deleteEvent = (eventId) => {
-    console.log(eventId);
+    setIsLoadingEvents(true);
     api
       .delete(
         `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?key=${API_KEY}`
       )
-      .then((data) => {
-        console.log("dataDelete", data);
+      .then(() => {
+        getEvents();
       })
       .catch((err) => {
         setIsLoadingEvents(false);
@@ -100,8 +148,9 @@ function App() {
             handleTimeFilter={handleTimeFilter}
             setIsModalOpen={setIsModalOpen}
           />
+          <p className="range_text">{filterDays}:</p>
           <EventsList
-            events={events}
+            groupedEvents={groupedEvents}
             isLoadingEvents={isLoadingEvents}
             getEvents={getEvents}
             deleteEvent={deleteEvent}
