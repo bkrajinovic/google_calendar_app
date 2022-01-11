@@ -1,0 +1,27 @@
+.login_wrapper {
+  height: 100%;
+  background: #f4f4f4;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  width: 100%;
+  top: 0;
+  justify-content: center;
+}
+
+.login_popup {
+  background: #fff;
+  max-width: 400px;
+  width: 100%;
+  padding: 50px;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px rgb(0 0 0 / 16%), 0 3px 6px rgb(0 0 0 / 23%);
+  text-align: center;
+}
+
+p {
+  font-weight: 300;
+  font-size: 18px;
+  padding: 20px;
+}

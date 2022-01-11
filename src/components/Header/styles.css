@@ -1,0 +1,52 @@
+.header {
+  padding: 20px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  z-index: 999;
+  align-items: center;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+}
+
+.header > .content_left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header > .content_left > p {
+  padding: 10px;
+  margin: 0;
+}
+
+.header > .content_right {
+  display: flex;
+  align-items: center;
+}
+
+.header > .content_right > div {
+  margin-right: 20px;
+}
+
+.event_card {
+  display: inline-block;
+  width: 305px;
+  margin: 25px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 1.5px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.event_card_text {
+  font-weight: bold;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+}
