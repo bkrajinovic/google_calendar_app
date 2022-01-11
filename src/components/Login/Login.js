@@ -1,12 +1,12 @@
 import React from "react";
-import { GoogleLogin } from "react-google-login";
 import localforage from "localforage";
+import { GoogleLogin } from "react-google-login";
 import { Calendar } from "react-bootstrap-icons";
+import { toast } from "react-toastify";
 import "./styles.css";
 
 function Login({ setIsLoggedIn }) {
   const responseGoogleOnSuccess = (response) => {
-    console.log("googleresSucc", response);
     if (response?.accessToken) {
       localforage.setItem("access_token", response.accessToken).then(() => {
         setIsLoggedIn(true);
@@ -14,8 +14,8 @@ function Login({ setIsLoggedIn }) {
     }
   };
 
-  const responseGoogleOnFailure = (response) => {
-    console.log("googleresFail", response);
+  const responseGoogleOnFailure = () => {
+    toast.error("Something went wrong while logging in");
   };
 
   return (

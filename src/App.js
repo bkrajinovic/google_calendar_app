@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { filterDateTimeFormat, defaultDateFormat } from "./constants";
+import moment from "moment";
+import localforage from "localforage";
+import api from "helpers/api";
+
 import Login from "./components/Login/Login";
 import EventsList from "./components/EventsList/EventsList";
 import Header from "components/Header/Header";
 import AddEventModal from "components/AddEventModal/AddEventModal";
-import localforage from "localforage";
-import api from "helpers/api";
-import { filterDateTimeFormat, defaultDateFormat } from "./constants";
-import "./App.css";
+
 import "bootstrap/dist/css/bootstrap.min.css";
-import moment from "moment";
+import 'react-toastify/dist/ReactToastify.css';
+import "./App.css";
 
 function App() {
   const API_KEY = "AIzaSyDuHD2xWRSbr1hSUtRfo-4Z63NSF5vfCh0";
@@ -25,7 +29,6 @@ function App() {
       if (filterDays !== "Last 30 days") {
         const groups = events.reduce((groups, event) => {
           const date = moment(event.start).format(defaultDateFormat);
-          console.log(groups[date]);
           if (!groups[date]) {
             groups[date] = [];
           }
@@ -43,7 +46,6 @@ function App() {
       } else {
         const groups = events.reduce((groups, event) => {
           const weekNumber = moment(event.start).week();
-          console.log(groups[weekNumber]);
           if (!groups[weekNumber]) {
             groups[weekNumber] = [];
           }
@@ -57,8 +59,6 @@ function App() {
             events: groups[week],
           };
         });
-
-        console.log("groupArrays", groupArrays);
         setGroupedEvents(groupArrays);
       }
     }
@@ -77,11 +77,7 @@ function App() {
   const handleTimeFilter = (day) => {
     setIsLoadingEvents(true);
     setFilterDays(day.name);
-    const timeFilter = `&timeMax=${moment().format(
-      filterDateTimeFormat
-    )}&timeMin=${moment()
-      .subtract(day.value, "days")
-      .format(filterDateTimeFormat)}`;
+    const timeFilter = `&timeMax=${moment().format(filterDateTimeFormat)}&timeMin=${moment().subtract(day.value, "days").format(filterDateTimeFormat)}`;
     getEvents(timeFilter);
   };
 
@@ -96,38 +92,30 @@ function App() {
 
   const deleteEvent = (eventId) => {
     setIsLoadingEvents(true);
-    api
-      .delete(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?key=${API_KEY}`
-      )
+    api.delete(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?key=${API_KEY}`)
       .then(() => {
         getEvents();
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoadingEvents(false);
-        console.log("err", err);
+        toast.error("Something went wrong while deleting event")
       });
   };
 
   const getEvents = (filters = "") => {
     if (!filters) {
-      filters += `&timeMax=${moment().format(
-        filterDateTimeFormat
-      )}&timeMin=${moment().subtract(7, "days").format(filterDateTimeFormat)}`;
+      filters += `&timeMax=${moment().format(filterDateTimeFormat)}&timeMin=${moment().subtract(7, "days").format(filterDateTimeFormat)}`;
     }
-    api
-      .get(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}&orderBy=startTime&singleEvents=true${filters}`
-      )
+    api.get(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}&orderBy=startTime&singleEvents=true${filters}`)
       .then((data) => {
         setIsLoadingEvents(false);
         if (data?.data?.items) {
           setEvents(formatEvents(data.data.items));
         }
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoadingEvents(false);
-        console.log("err", err);
+        toast.error("Something went wrong while fetching events")
       });
   };
 
@@ -155,6 +143,7 @@ function App() {
             getEvents={getEvents}
             deleteEvent={deleteEvent}
           />
+          <ToastContainer />
         </div>
       )}
     </div>

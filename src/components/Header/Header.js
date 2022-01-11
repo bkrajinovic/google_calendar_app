@@ -17,6 +17,7 @@ function Header({ handleTimeFilter, setIsModalOpen }) {
     { name: "Last 7 days", value: 7 },
     { name: "Last 30 days", value: 30 },
   ];
+
   return (
     <div className="header">
       <div className="content_left">

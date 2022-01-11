@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import { filterDateTimeFormat } from "../../constants";
 import api from "helpers/api";
 import moment from "moment";
+
+import { Modal, Button, Form } from "react-bootstrap";
+import { filterDateTimeFormat } from "../../constants";
+import { toast } from "react-toastify";
 import "./styles.css";
 
 function AddEventModal({ setIsModalOpen, isModalOpen, getEvents, API_KEY }) {
@@ -22,24 +24,20 @@ function AddEventModal({ setIsModalOpen, isModalOpen, getEvents, API_KEY }) {
         dateTime: `${moment(start).utc().format(filterDateTimeFormat)}`,
       },
     };
-    api
-      .post(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}`,
-        event
-      )
+    api.post(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}`,event)
       .then(() => {
         handleClose();
         getEvents();
       })
-      .catch((err) => {
-        console.log("err", err);
+      .catch(() => {
+        toast.error("Something went wrong while posting event")
       });
   };
 
   return (
     <div>
       <Modal show={isModalOpen} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>New event</Modal.Title>
         </Modal.Header>
         <Modal.Body>

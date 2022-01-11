@@ -1,58 +1,36 @@
 import axios from "axios";
 import localforage from "localforage";
 
-const endpoint = "";
-
-const getPath = (url) => `${endpoint}${url}`;
-
 const api = {
-  get: (url, config = undefined) => {
-    return localforage.getItem("access_token").then((token) => {
-      if (!config) {
-        config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-      } else if (config && !config.headers) {
-        config.headers = {
-          Authorization: `Bearer ${token}`,
-        };
+  get: async (url) => {
+    let config = null;
+    const token = await localforage.getItem("access_token");
+    config = {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-      return axios.get(getPath(url), config);
-    });
+    };
+    return await axios.get(url, config);
   },
-  post: (url, data = undefined, config = undefined) => {
-    return localforage.getItem("access_token").then((token) => {
-      if (!config) {
-        config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-      } else if (config && !config.headers) {
-        config.headers = {
-          Authorization: `Bearer ${token}`,
-        };
+  post: async (url, data = undefined) => {
+    let config = null;
+    const token = await localforage.getItem("access_token");
+    config = {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-      return axios.post(getPath(url), data, config);
-    });
+    };
+    return await axios.post(url, data, config);
   },
-  delete: (url, config = undefined) => {
-    return localforage.getItem("access_token").then((token) => {
-      if (!config) {
-        config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-      } else if (config && !config.headers) {
-        config.headers = {
-          Authorization: `Bearer ${token}`,
-        };
+  delete: async (url) => {
+    let config = null;
+    const token = await localforage.getItem("access_token");
+    config = {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-      return axios.delete(getPath(url), config);
-    });
+    };
+    return await axios.delete(url, config);
   },
 };
 

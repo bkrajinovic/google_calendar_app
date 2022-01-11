@@ -63,7 +63,7 @@ function EventsList({
           );
         })
       ) : (
-        <div className="no_data_message">Nema podataka</div>
+        <div className="no_data_message">No events for selected period</div>
       )}
     </div>
   );
