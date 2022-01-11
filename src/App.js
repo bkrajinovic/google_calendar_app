@@ -11,14 +11,12 @@ import Header from "components/Header/Header";
 import AddEventModal from "components/AddEventModal/AddEventModal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 function App() {
-  const API_KEY = "AIzaSyDuHD2xWRSbr1hSUtRfo-4Z63NSF5vfCh0";
-
   const [events, setEvents] = useState([]);
-  const [filterDays, setFilterDays] = useState("Last 7 days");
+  const [currentFilter, setCurrentFilter] = useState({name: "Last 7 days", value: 7 });
   const [groupedEvents, setGroupedEvents] = useState(null);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,7 +24,7 @@ function App() {
 
   useEffect(() => {
     if (events && events.length) {
-      if (filterDays !== "Last 30 days") {
+      if (currentFilter.name !== "Last 30 days") {
         const groups = events.reduce((groups, event) => {
           const date = moment(event.start).format(defaultDateFormat);
           if (!groups[date]) {
@@ -74,10 +72,14 @@ function App() {
     });
   }, []);
 
-  const handleTimeFilter = (day) => {
+  const handleTimeFilter = (filter) => {
     setIsLoadingEvents(true);
-    setFilterDays(day.name);
-    const timeFilter = `&timeMax=${moment().format(filterDateTimeFormat)}&timeMin=${moment().subtract(day.value, "days").format(filterDateTimeFormat)}`;
+    setCurrentFilter(filter)
+    const timeFilter = `&timeMax=${moment().format(
+      filterDateTimeFormat
+    )}&timeMin=${moment()
+      .subtract(filter.value, "days")
+      .format(filterDateTimeFormat)}`;
     getEvents(timeFilter);
   };
 
@@ -92,21 +94,30 @@ function App() {
 
   const deleteEvent = (eventId) => {
     setIsLoadingEvents(true);
-    api.delete(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?key=${API_KEY}`)
+    api
+      .delete(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?key=${process.env.REACT_APP_API_KEY}`
+      )
       .then(() => {
-        getEvents();
+        handleTimeFilter(currentFilter);
       })
       .catch(() => {
         setIsLoadingEvents(false);
-        toast.error("Something went wrong while deleting event")
+        toast.error("Something went wrong while deleting event");
       });
   };
 
   const getEvents = (filters = "") => {
+    setIsLoadingEvents(true);
     if (!filters) {
-      filters += `&timeMax=${moment().format(filterDateTimeFormat)}&timeMin=${moment().subtract(7, "days").format(filterDateTimeFormat)}`;
+      filters += `&timeMax=${moment().format(
+        filterDateTimeFormat
+      )}&timeMin=${moment().subtract(7, "days").format(filterDateTimeFormat)}`;
     }
-    api.get(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}&orderBy=startTime&singleEvents=true${filters}`)
+    api
+      .get(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${process.env.REACT_APP_API_KEY}&orderBy=startTime&singleEvents=true${filters}`
+      )
       .then((data) => {
         setIsLoadingEvents(false);
         if (data?.data?.items) {
@@ -115,7 +126,7 @@ function App() {
       })
       .catch(() => {
         setIsLoadingEvents(false);
-        toast.error("Something went wrong while fetching events")
+        toast.error("Something went wrong while fetching events");
       });
   };
 
@@ -128,15 +139,15 @@ function App() {
             <AddEventModal
               setIsModalOpen={setIsModalOpen}
               isModalOpen={isModalOpen}
-              getEvents={getEvents}
-              API_KEY={API_KEY}
+              handleTimeFilter={handleTimeFilter}
+              currentFilter={currentFilter}
             />
           )}
           <Header
             handleTimeFilter={handleTimeFilter}
             setIsModalOpen={setIsModalOpen}
           />
-          <p className="range_text">{filterDays}:</p>
+          <p className="range_text">{currentFilter.name}:</p>
           <EventsList
             groupedEvents={groupedEvents}
             isLoadingEvents={isLoadingEvents}

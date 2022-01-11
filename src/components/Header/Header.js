@@ -12,7 +12,7 @@ function Header({ handleTimeFilter, setIsModalOpen }) {
     });
   };
 
-  const numOfDays = [
+  const dayFilters = [
     { name: "Last 24 hours", value: 1 },
     { name: "Last 7 days", value: 7 },
     { name: "Last 30 days", value: 30 },
@@ -31,12 +31,12 @@ function Header({ handleTimeFilter, setIsModalOpen }) {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            {numOfDays.map((day, index) => (
+            {dayFilters.map((value, index) => (
               <Dropdown.Item
                 key={index}
-                onClick={() => handleTimeFilter(day)}
+                onClick={() => handleTimeFilter(value)}
               >
-                {day.name}
+                {value.name}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>

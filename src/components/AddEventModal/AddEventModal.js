@@ -7,7 +7,7 @@ import { filterDateTimeFormat } from "../../constants";
 import { toast } from "react-toastify";
 import "./styles.css";
 
-function AddEventModal({ setIsModalOpen, isModalOpen, getEvents, API_KEY }) {
+function AddEventModal({ setIsModalOpen, isModalOpen, handleTimeFilter, currentFilter }) {
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -24,10 +24,10 @@ function AddEventModal({ setIsModalOpen, isModalOpen, getEvents, API_KEY }) {
         dateTime: `${moment(start).utc().format(filterDateTimeFormat)}`,
       },
     };
-    api.post(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${API_KEY}`,event)
+    api.post(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${process.env.REACT_APP_API_KEY}`,event)
       .then(() => {
         handleClose();
-        getEvents();
+        handleTimeFilter(currentFilter);
       })
       .catch(() => {
         toast.error("Something went wrong while posting event")

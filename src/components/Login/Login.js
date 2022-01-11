@@ -14,7 +14,7 @@ function Login({ setIsLoggedIn }) {
     }
   };
 
-  const responseGoogleOnFailure = () => {
+  const responseGoogleOnFailure = (err) => {
     toast.error("Something went wrong while logging in");
   };
 
@@ -26,7 +26,7 @@ function Login({ setIsLoggedIn }) {
         <p>Login with your Google account</p>
         <div className="login_button">
           <GoogleLogin
-            clientId="306213266656-u16acf1jm9n3c93c88nvvkeq29girmho.apps.googleusercontent.com"
+            clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             buttonText="Login with Google"
             onSuccess={responseGoogleOnSuccess}
             onFailure={responseGoogleOnFailure}
