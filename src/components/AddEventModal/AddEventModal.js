@@ -2,12 +2,19 @@ import React, { useState } from "react";
 import api from "helpers/api";
 import moment from "moment";
 
+import DatePicker from "react-datepicker";
 import { Modal, Button, Form } from "react-bootstrap";
 import { filterDateTimeFormat } from "../../constants";
 import { toast } from "react-toastify";
+import "react-datepicker/dist/react-datepicker.css";
 import "./styles.css";
 
-function AddEventModal({ setIsModalOpen, isModalOpen, handleTimeFilter, currentFilter }) {
+function AddEventModal({
+  setIsModalOpen,
+  isModalOpen,
+  handleTimeFilter,
+  currentFilter,
+}) {
   const [title, setTitle] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
@@ -24,14 +31,26 @@ function AddEventModal({ setIsModalOpen, isModalOpen, handleTimeFilter, currentF
         dateTime: `${moment(start).utc().format(filterDateTimeFormat)}`,
       },
     };
-    api.post(`https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${process.env.REACT_APP_API_KEY}`,event)
+    api
+      .post(
+        `https://www.googleapis.com/calendar/v3/calendars/primary/events?key=${process.env.REACT_APP_API_KEY}`,
+        event
+      )
       .then(() => {
         handleClose();
         handleTimeFilter(currentFilter);
       })
       .catch(() => {
-        toast.error("Something went wrong while posting event")
+        toast.error("Something went wrong while posting event");
       });
+  };
+
+  const onChnageStart = (date) => {
+    setStart(date);
+  };
+
+  const onChangeEnd = (date) => {
+    setEnd(date);
   };
 
   return (
@@ -57,26 +76,30 @@ function AddEventModal({ setIsModalOpen, isModalOpen, handleTimeFilter, currentF
             <Form.Group className="mb-3">
               <Form.Label>Start*</Form.Label>
               <br />
-              <input
+              <DatePicker
                 className="dateTime_input"
-                type="datetime-local"
-                value={start}
-                onChange={(e) => {
-                  setStart(e.target.value);
-                }}
+                dateFormat="dd.MM.yyyy. HH:mm"
+                selected={start}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                disabledKeyboardNavigation
+                onChange={onChnageStart}
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>End*</Form.Label>
               <br />
-              <input
+              <DatePicker
                 className="dateTime_input"
-                type="datetime-local"
-                value={end}
-                onChange={(e) => {
-                  setEnd(e.target.value);
-                }}
+                dateFormat="dd.MM.yyyy. HH:mm"
+                selected={end}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={30}
+                disabledKeyboardNavigation
+                onChange={onChangeEnd}
               />
             </Form.Group>
           </Form>
