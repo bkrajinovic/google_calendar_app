@@ -21,3 +21,10 @@
   padding: 20px;
   margin: 0;
 }
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20%;
+}
