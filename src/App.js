@@ -133,7 +133,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="page">
       {!isLoggedIn && <Login setIsLoggedIn={setIsLoggedIn} />}
       {isLoggedIn && (
         <div className="app_wrapper">
