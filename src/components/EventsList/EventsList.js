@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import moment from "moment";
-import { defaultTimeFormat } from "constants";
+import { defaultDateTimeFormat, defaultTimeFormat } from "constants";
 import { Spinner, Button, Table } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
 import "./styles.css";
@@ -10,6 +10,7 @@ function EventsList({
   groupedEvents,
   getEvents,
   deleteEvent,
+  currentFilter,
 }) {
   useEffect(() => {
     getEvents();
@@ -45,8 +46,8 @@ function EventsList({
                     <tr>
                       <td>{index + 1}</td>
                       <td>{event.title}</td>
-                      <td>{moment(event.start).format(defaultTimeFormat)}</td>
-                      <td>{moment(event.end).format(defaultTimeFormat)}</td>
+                      <td>{moment(event.start).format(currentFilter.value !== 30 ? defaultTimeFormat: defaultDateTimeFormat)}</td>
+                      <td>{moment(event.end).format(currentFilter.value !== 30 ? defaultTimeFormat: defaultDateTimeFormat)}</td>
                       <td style={{ textAlign: "center" }}>
                         <Button
                           onClick={() => deleteEvent(event.id)}

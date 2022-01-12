@@ -59,6 +59,8 @@ function App() {
         });
         setGroupedEvents(groupArrays);
       }
+    } else {
+      setGroupedEvents([]);
     }
   }, [events]);
 
@@ -74,13 +76,13 @@ function App() {
 
   const handleTimeFilter = (filter) => {
     setIsLoadingEvents(true);
-    setCurrentFilter(filter)
     const timeFilter = `&timeMax=${moment().format(
       filterDateTimeFormat
     )}&timeMin=${moment()
       .subtract(filter.value, "days")
       .format(filterDateTimeFormat)}`;
     getEvents(timeFilter);
+    setCurrentFilter(filter);
   };
 
   const formatEvents = (list) => {
@@ -153,6 +155,7 @@ function App() {
             isLoadingEvents={isLoadingEvents}
             getEvents={getEvents}
             deleteEvent={deleteEvent}
+            currentFilter={currentFilter}
           />
           <ToastContainer />
         </div>

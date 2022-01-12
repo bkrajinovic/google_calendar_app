@@ -14,7 +14,7 @@ function Login({ setIsLoggedIn }) {
     }
   };
 
-  const responseGoogleOnFailure = (err) => {
+  const responseGoogleOnFailure = () => {
     toast.error("Something went wrong while logging in");
   };
 
