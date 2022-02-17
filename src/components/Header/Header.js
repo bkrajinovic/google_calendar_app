@@ -13,9 +13,9 @@ function Header({ handleTimeFilter, setIsModalOpen }) {
   };
 
   const dayFilters = [
-    { name: "Last 24 hours", value: 1 },
-    { name: "Last 7 days", value: 7 },
-    { name: "Last 30 days", value: 30 },
+    { name: "Tommorow", value: 1 },
+    { name: "Next 7 days", value: 7 },
+    { name: "Next 30 days", value: 30 },
   ];
 
   return (

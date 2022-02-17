@@ -16,7 +16,7 @@ import "./App.css";
 
 function App() {
   const [events, setEvents] = useState([]);
-  const [currentFilter, setCurrentFilter] = useState({name: "Last 7 days", value: 7 });
+  const [currentFilter, setCurrentFilter] = useState({name: "Next 7 days", value: 7 });
   const [groupedEvents, setGroupedEvents] = useState(null);
   const [isLoadingEvents, setIsLoadingEvents] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +24,7 @@ function App() {
 
   useEffect(() => {
     if (events && events.length) {
-      if (currentFilter.name !== "Last 30 days") {
+      if (currentFilter.name !== "Next 30 days") {
         const groups = events.reduce((groups, event) => {
           const date = moment(event.start).format(defaultDateFormat);
           if (!groups[date]) {
@@ -76,10 +76,10 @@ function App() {
 
   const handleTimeFilter = (filter) => {
     setIsLoadingEvents(true);
-    const timeFilter = `&timeMax=${moment().format(
+    const timeFilter = `&timeMin=${moment().format(
       filterDateTimeFormat
-    )}&timeMin=${moment()
-      .subtract(filter.value, "days")
+    )}&timeMax=${moment()
+      .add(filter.value, "days")
       .format(filterDateTimeFormat)}`;
     getEvents(timeFilter);
     setCurrentFilter(filter);
@@ -112,9 +112,9 @@ function App() {
   const getEvents = (filters = "") => {
     setIsLoadingEvents(true);
     if (!filters) {
-      filters += `&timeMax=${moment().format(
+      filters += `&timeMin=${moment().format(
         filterDateTimeFormat
-      )}&timeMin=${moment().subtract(7, "days").format(filterDateTimeFormat)}`;
+      )}&timeMax=${moment().add(7, "days").format(filterDateTimeFormat)}`;
     }
     api
       .get(
